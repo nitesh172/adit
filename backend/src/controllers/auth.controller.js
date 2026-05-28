@@ -21,10 +21,11 @@ const login = async (req, res) => {
 
     const { token, user } = result
 
+    const isProduction = process.env.NODE_ENV === "production"
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 3600000, // 1 hour
     })
 
@@ -49,10 +50,11 @@ const signUp = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
+    const isProduction = process.env.NODE_ENV === "production"
     res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     })
     res.status(StatusCodes.OK).json({ message: "Logged out successfully" })
   } catch (error) {
