@@ -10,7 +10,8 @@ const getTask = async (req, res) => {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Task not found" })
     }
 
-    if (req.user.role !== "admin" && task.createdBy.toString() !== req.user.id.toString()) {
+    const creatorId = task.createdBy && (task.createdBy._id || task.createdBy)
+    if (req.user.role !== "admin" && creatorId.toString() !== req.user.id.toString()) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You are not authorized to view this task" })
     }
 
@@ -58,7 +59,8 @@ const updateTask = async (req, res) => {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Task not found" })
     }
 
-    if (req.user.role !== "admin" && task.createdBy.toString() !== req.user.id.toString()) {
+    const creatorId = task.createdBy && (task.createdBy._id || task.createdBy)
+    if (req.user.role !== "admin" && creatorId.toString() !== req.user.id.toString()) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You are not authorized to update this task" })
     }
 
@@ -79,7 +81,8 @@ const deleteTask = async (req, res) => {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Task not found" })
     }
 
-    if (req.user.role !== "admin" && task.createdBy.toString() !== req.user.id.toString()) {
+    const creatorId = task.createdBy && (task.createdBy._id || task.createdBy)
+    if (req.user.role !== "admin" && creatorId.toString() !== req.user.id.toString()) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You are not authorized to delete this task" })
     }
 

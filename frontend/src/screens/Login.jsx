@@ -10,19 +10,40 @@ function Login() {
     email: "",
     password: "",
   })
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const { login } = useAuth()
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    if (error) setError(null)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    // Basic Client-side Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address.")
+      return
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long.")
+      return
+    }
+
     try {
+      setLoading(true)
+      setError(null)
       await login(formData.email, formData.password)
-    } catch (error) {
-      console.error("Login failed:", error)
+    } catch (err) {
+      console.error("Login failed:", err)
+      setError(err.message || "Invalid email or password.")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -33,12 +54,20 @@ function Login() {
         className="flex flex-col font-ubuntu gap-y-6 justify-center px-10 md:px-20 py-10 h-full"
       >
         <h1 className="font-bold text-3xl">Login</h1>
+
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-sm text-sm text-red-700 animate-in fade-in duration-200">
+            {error}
+          </div>
+        )}
+
         <Input
           label="Email"
           value={formData.email}
           name="email"
           type="email"
           required
+          disabled={loading}
           onChange={handleChange}
           placeholder="abc@gmail.com"
         />
@@ -46,12 +75,18 @@ function Login() {
           label="Password"
           value={formData.password}
           required
+          disabled={loading}
           name="password"
           type="password"
           onChange={handleChange}
           placeholder="************"
         />
-        <Button title="Login" type="submit" className="w-full" />
+        <Button
+          title={loading ? "Logging in..." : "Login"}
+          type="submit"
+          className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={loading}
+        />
         <div className="text-base text-gray-700">
           <span>Don't have an account? </span>
           <Link to="/signup" className="text-primary">
