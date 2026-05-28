@@ -3,4 +3,5 @@
 @theme {
   --color-primary: #0e71e8;
   --color-primary-dark: #0b5dbe;
+  --font-ubuntu: "Ubuntu", sans-serif;
 }

@@ -19,7 +19,16 @@ const login = async (req, res) => {
         .json({ message: "Invalid credentials" })
     }
 
-    res.status(StatusCodes.OK).json(result)
+    const { token, user } = result
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 3600000, // 1 hour
+    })
+
+    res.status(StatusCodes.OK).json({ user })
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -38,4 +47,29 @@ const signUp = async (req, res) => {
   }
 }
 
-module.exports = { login, signUp }
+const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    })
+    res.status(StatusCodes.OK).json({ message: "Logged out successfully" })
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message })
+  }
+}
+
+const getMe = async (req, res) => {
+  try {
+    res.status(StatusCodes.OK).json({ user: req.user })
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message })
+  }
+}
+
+module.exports = { login, signUp, logout, getMe }
