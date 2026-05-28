@@ -11,19 +11,45 @@ function Signup() {
     email: "",
     password: "",
   })
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const { signUp } = useAuth()
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    if (error) setError(null)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Basic Client-side Validation
+    if (!formData.name.trim()) {
+      setError("Please enter your full name.")
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address.")
+      return
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long.")
+      return
+    }
+
     try {
+      setLoading(true)
+      setError(null)
       await signUp(formData.name, formData.email, formData.password)
-    } catch (error) {
-      console.error("Signup failed:", error)
+    } catch (err) {
+      console.error("Signup failed:", err)
+      setError(err.message || "Failed to register account.")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -34,12 +60,20 @@ function Signup() {
         className="flex flex-col font-ubuntu gap-y-6 justify-center px-10 md:px-20 py-10 h-full"
       >
         <h1 className="font-bold text-3xl">Signup</h1>
+
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-sm text-sm text-red-700 animate-in fade-in duration-200">
+            {error}
+          </div>
+        )}
+
         <Input
           label="Full Name"
           type="text"
           name="name"
           value={formData.name}
           required
+          disabled={loading}
           onChange={handleChange}
           placeholder="John Doe"
         />
@@ -49,6 +83,7 @@ function Signup() {
           name="email"
           value={formData.email}
           required
+          disabled={loading}
           onChange={handleChange}
           placeholder="abc@gmail.com"
         />
@@ -58,10 +93,16 @@ function Signup() {
           name="password"
           value={formData.password}
           required
+          disabled={loading}
           onChange={handleChange}
           placeholder="************"
         />
-        <Button title="Signup" type="submit" className="w-full" />
+        <Button
+          title={loading ? "Registering..." : "Signup"}
+          type="submit"
+          className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={loading}
+        />
         <div className="text-base text-gray-700">
           <span>Already have an account? </span>
           <Link to="/login" className="text-primary">
