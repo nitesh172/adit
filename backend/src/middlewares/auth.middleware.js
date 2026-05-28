@@ -5,15 +5,30 @@ const { User } = require("../models")
 
 const auth = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization
+    let token = null
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (req.headers.cookie) {
+      const tokenCookie = req.headers.cookie
+        .split("; ")
+        .find((row) => row.startsWith("token="))
+      if (tokenCookie) {
+        token = tokenCookie.split("=")[1]
+      }
+    }
+
+    if (!token) {
+      const authHeader = req.headers.authorization
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        token = authHeader.split(" ")[1]
+      }
+    }
+
+    if (!token) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
         message: "Access denied. No token provided.",
       })
     }
 
-    const token = authHeader.split(" ")[1]
     const decoded = jwt.verify(token, config.jwtSecret)
 
     const user = await User.findById(decoded._id).select("-password")
