@@ -59,7 +59,14 @@ function Signup() {
         onSubmit={handleSubmit}
         className="flex flex-col font-ubuntu gap-y-6 justify-center px-10 md:px-20 py-10 h-full"
       >
-        <h1 className="font-bold text-3xl">Signup</h1>
+        <div>
+          <h1 className="font-extrabold text-3xl text-gray-900 tracking-tight">
+            Create Account
+          </h1>
+          <p className="text-gray-500 text-sm mt-1.5">
+            Get started to easily coordinate and track your tasks.
+          </p>
+        </div>
 
         {error && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-sm text-sm text-red-700 animate-in fade-in duration-200">
@@ -67,36 +74,39 @@ function Signup() {
           </div>
         )}
 
-        <Input
-          label="Full Name"
-          type="text"
-          name="name"
-          value={formData.name}
-          required
-          disabled={loading}
-          onChange={handleChange}
-          placeholder="John Doe"
-        />
-        <Input
-          label="Email"
-          type="email"
-          name="email"
-          value={formData.email}
-          required
-          disabled={loading}
-          onChange={handleChange}
-          placeholder="abc@gmail.com"
-        />
-        <Input
-          label="Password"
-          type="password"
-          name="password"
-          value={formData.password}
-          required
-          disabled={loading}
-          onChange={handleChange}
-          placeholder="************"
-        />
+        <div className="space-y-4">
+          <Input
+            label="Full Name"
+            type="text"
+            name="name"
+            value={formData.name}
+            required
+            disabled={loading}
+            onChange={handleChange}
+            placeholder="John Doe"
+          />
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            value={formData.email}
+            required
+            disabled={loading}
+            onChange={handleChange}
+            placeholder="abc@gmail.com"
+          />
+          <Input
+            label="Password"
+            type="password"
+            name="password"
+            value={formData.password}
+            required
+            disabled={loading}
+            onChange={handleChange}
+            placeholder="************"
+          />
+        </div>
+
         <Button
           title={loading ? "Registering..." : "Signup"}
           type="submit"

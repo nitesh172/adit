@@ -25,7 +25,9 @@ function Profile() {
         <div className="h-24 w-24 rounded-full bg-white text-primary text-4xl font-bold flex items-center justify-center shadow-lg border-4 border-white mb-4">
           {firstLetter}
         </div>
-        <h2 className="text-white text-2xl font-bold font-ubuntu">{user.name}</h2>
+        <h2 className="text-white text-2xl font-bold font-ubuntu">
+          {user.name}
+        </h2>
         <span className="inline-block mt-2 px-3 py-1 rounded-full bg-blue-700/30 text-white text-xs font-semibold uppercase tracking-wider">
           {user.role || "User"}
         </span>

@@ -12,4 +12,16 @@ const loginSchema = yup.object({
   password: yup.string().min(6).required(),
 })
 
-module.exports = { signupSchema, loginSchema }
+const createTaskSchema = yup.object({
+  title: yup.string().required("Title is required").trim(),
+  description: yup.string().nullable().optional().default(""),
+  status: yup.string().oneOf(["PENDING", "COMPLETED"]).default("PENDING"),
+})
+
+const updateTaskSchema = yup.object({
+  title: yup.string().optional().trim(),
+  description: yup.string().nullable().optional().default(""),
+  status: yup.string().oneOf(["PENDING", "COMPLETED"]),
+})
+
+module.exports = { signupSchema, loginSchema, createTaskSchema, updateTaskSchema }

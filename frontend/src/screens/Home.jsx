@@ -128,6 +128,31 @@ function Home() {
     }
   }
 
+  const handleMarkAsCompleted = async (task) => {
+    try {
+      setError(null)
+      const response = await fetch(`${config.apiUrl}/task/${task._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "COMPLETED" }),
+        credentials: "include",
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to complete task")
+      }
+
+      fetchTasks()
+    } catch (err) {
+      console.error("Complete task error:", err)
+      setError(err.message)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -154,10 +179,10 @@ function Home() {
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
-              className={`px-4 py-1.5 rounded-sm text-sm font-semibold cursor-pointer transition-colors ${
+              className={`px-5 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-200 ${
                 statusFilter === status
-                  ? "bg-primary text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-white/40"
               }`}
             >
               {status.charAt(0) + status.slice(1).toLowerCase()}
@@ -198,6 +223,7 @@ function Home() {
               currentUser={user}
               onEdit={handleOpenEditModal}
               onDelete={handleOpenDeleteModal}
+              onComplete={handleMarkAsCompleted}
             />
           ))}
         </div>

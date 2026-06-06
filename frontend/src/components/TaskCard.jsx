@@ -1,7 +1,7 @@
 import React from "react"
 import TextButton from "./TextButton"
 
-function TaskCard({ task, currentUser, onEdit, onDelete }) {
+function TaskCard({ task, currentUser, onEdit, onDelete, onComplete }) {
   const creatorId =
     task.createdBy &&
     (typeof task.createdBy === "object"
@@ -28,47 +28,75 @@ function TaskCard({ task, currentUser, onEdit, onDelete }) {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full">
-      <div className="space-y-3">
-        <div className="flex justify-between items-start gap-x-2">
-          <h4 className="font-semibold text-lg text-gray-900 line-clamp-1">
+      <div className="space-y-4">
+        <div className="flex justify-between items-start gap-x-3">
+          <h4
+            className={`font-ubuntu font-bold text-lg text-gray-900 line-clamp-2 leading-snug ${
+              isCompleted
+                ? "text-gray-400 line-through decoration-gray-300"
+                : ""
+            }`}
+          >
             {task.title}
           </h4>
           <span
-            className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide ${
+            className={`inline-flex items-center gap-x-1 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
               isCompleted
-                ? "bg-green-50 text-green-700 border border-green-200"
-                : "bg-amber-50 text-amber-700 border border-amber-200"
+                ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
+                : "bg-amber-50 text-amber-700 border border-amber-200/60"
             }`}
           >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${isCompleted ? "bg-emerald-500" : "bg-amber-500"}`}
+            ></span>
             {task.status}
           </span>
         </div>
-        <p className="text-gray-600 text-sm line-clamp-3 min-h-10">
+
+        <p
+          className={`text-sm leading-relaxed ${isCompleted ? "text-gray-400" : "text-gray-600"} line-clamp-3 min-h-12`}
+        >
           {task.description || "No description provided."}
         </p>
+
         {currentUser?.role === "admin" && task.createdBy && (
-          <p className="text-xs text-gray-500 font-medium">
-            Created by:{" "}
-            <span className="font-semibold text-gray-700">{creatorName}</span>
-          </p>
+          <div className="flex items-center gap-x-1.5 text-xs text-gray-400 mt-2 bg-gray-50 px-2.5 py-1.5 rounded-lg w-fit">
+            <span>Created by:</span>
+            <span className="font-semibold text-gray-600">{creatorName}</span>
+          </div>
         )}
       </div>
 
       <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
-        <span className="text-xs text-gray-400">
-          Created: {new Date(task.createdAt).toLocaleDateString()}
+        <span className="text-[11px] text-gray-400 font-medium">
+          Created:{" "}
+          {new Date(task.createdAt).toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
         </span>
         {canModify && (
-          <div className="flex gap-x-2">
+          <div className="flex gap-x-3">
+            {!isCompleted && onComplete && (
+              <TextButton
+                onClick={() => onComplete(task)}
+                title="Complete"
+                color="success"
+                className="font-semibold"
+              />
+            )}
             <TextButton
               onClick={() => onEdit(task)}
               title="Edit"
               color="primary"
+              className="font-semibold"
             />
             <TextButton
               onClick={() => onDelete(task)}
               title="Delete"
               color="danger"
+              className="font-semibold"
             />
           </div>
         )}
