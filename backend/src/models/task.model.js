@@ -10,6 +10,7 @@ const taskSchema = mongoose.Schema(
     description: {
       type: String,
       trim: true,
+      default: "",
     },
     status: {
       type: String,

@@ -22,7 +22,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     // Basic Client-side Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(formData.email)) {
@@ -53,7 +53,14 @@ function Login() {
         onSubmit={handleSubmit}
         className="flex flex-col font-ubuntu gap-y-6 justify-center px-10 md:px-20 py-10 h-full"
       >
-        <h1 className="font-bold text-3xl">Login</h1>
+        <div>
+          <h1 className="font-extrabold text-3xl text-gray-900 tracking-tight">
+            Welcome Back
+          </h1>
+          <p className="text-gray-500 text-sm mt-1.5">
+            Sign in to your account to manage your tasks.
+          </p>
+        </div>
 
         {error && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-sm text-sm text-red-700 animate-in fade-in duration-200">
@@ -61,26 +68,29 @@ function Login() {
           </div>
         )}
 
-        <Input
-          label="Email"
-          value={formData.email}
-          name="email"
-          type="email"
-          required
-          disabled={loading}
-          onChange={handleChange}
-          placeholder="abc@gmail.com"
-        />
-        <Input
-          label="Password"
-          value={formData.password}
-          required
-          disabled={loading}
-          name="password"
-          type="password"
-          onChange={handleChange}
-          placeholder="************"
-        />
+        <div className="space-y-4">
+          <Input
+            label="Email"
+            value={formData.email}
+            name="email"
+            type="email"
+            required
+            disabled={loading}
+            onChange={handleChange}
+            placeholder="abc@gmail.com"
+          />
+          <Input
+            label="Password"
+            value={formData.password}
+            required
+            disabled={loading}
+            name="password"
+            type="password"
+            onChange={handleChange}
+            placeholder="************"
+          />
+        </div>
+
         <Button
           title={loading ? "Logging in..." : "Login"}
           type="submit"
